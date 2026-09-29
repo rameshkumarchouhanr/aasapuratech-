@@ -50,6 +50,157 @@
 
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>आशापुरा टेक - Aasapura Tech</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        header {
+            background-color: #004080;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        nav {
+            background-color: #0066cc;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            display: flex;
+            min-height: 400px;
+            margin: 20px;
+        }
+        sidebar {
+            width: 25%;
+            background: white;
+            padding: 15px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            overflow-y: max-height;
+            max-height: 500px;
+        }
+        .content {
+            width: 75%;
+            background: white;
+            padding: 20px;
+            margin-left: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;
+        }
+        .page-link {
+            display: block;
+            padding: 5px 0;
+            color: #0066cc;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .page-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>आशापुरा टेक (Aasapura Tech)</h1>
+        <p>संस्थापक: रमेश कुमार चौहान | मोबाइल: 9057194614</p>
+    </header>
+
+    <nav>
+        <a href="#" onclick="showHome()">होम</a>
+        <a href="#" onclick="showPagesList()">सभी 100 पेजेस सूची</a>
+        <a href="#" onclick="showContact()">संपर्क करें</a>
+    </nav>
+
+    <div class="container">
+        <sidebar id="sidebar-menu">
+            <h3>पेज सूची (1 से 100)</h3>
+            <div id="links-container" style="max-height: 400px; overflow-y: scroll;">
+                <!-- JavaScript द्वारा 100 लिंक्स यहाँ जनरेट होंगे -->
+            </div>
+        </sidebar>
+
+        <div class="content" id="main-content">
+            <h2>स्वागत है!</h2>
+            <p>यह आशापुरा टेक की आधिकारिक गिटअप वेबसाइट है। बाईं ओर दी गई सूची से किसी भी पेज (1 से 100) पर क्लिक करके उसका विवरण यहाँ देख सकते हैं।</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Aasapura Tech. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // 100 पेजेस का डेटा डायनेमिक रूप से तैयार करना
+        const totalPages = 100;
+        
+        function generateSidebarLinks() {
+            let container = document.getElementById('links-container');
+            let htmlContent = '';
+            for (let i = 1; i <= totalPages; i++) {
+                htmlContent += `<a class="page-link" onclick="loadPage(${i})">पेज नंबर ${i}: विषय विवरण</a>`;
+            }
+            container.innerHTML = htmlContent;
+        }
+
+        function loadPage(pageNumber) {
+            let contentDiv = document.getElementById('main-content');
+            contentDiv.innerHTML = `
+                <h2>आशापुरा टेक - पेज क्र. ${pageNumber}</h2>
+                <p>यह पेज नंबर <strong>${pageNumber}</strong> का मुख्य कंटेंट है। यहाँ आप अपनी अंग्रेजी ग्रामर, शिक्षा या टेक से जुड़ी सामग्री जोड़ सकते हैं।</p>
+                <p><em>यह वेबसाइट रमेश कुमार चौहान द्वारा गिटअप पर होस्ट की गई है।</em></p>
+            `;
+        }
+
+        function showHome() {
+            document.getElementById('main-content').innerHTML = `
+                <h2>स्वागत है!</h2>
+                <p>यह आशापुरा टेक की आधिकारिक गिटअप वेबसाइट है। बाईं ओर दी गई सूची से किसी भी पेज (1 से 100) पर क्लिक करें।</p>
+            `;
+        }
+
+        function showContact() {
+            document.getElementById('main-content').innerHTML = `
+                <h2>संपर्क करें</h2>
+                <p><strong>संस्थापक:</strong> रमेश कुमार चौहान</p>
+                <p><strong>मोबाइल नंबर:</strong> 9057194614</p>
+                <p><strong>प्लेटफॉर्म:</strong> आशापुरा टेक / गिटअप</p>
+            `;
+        }
+
+        // पेज लोड होने पर लिंक्स जनरेट करें
+        window.onload = function() {
+            generateSidebarLinks();
+        };
+    </script>
+
+</body>
+</html>
 
 <!DOCTYPE html>
 <html lang="hi">
