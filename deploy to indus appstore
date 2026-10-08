@@ -1,0 +1,23 @@
+name: Deploy to Indus Appstore
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: रिपॉजिटरी का कोड चेकआउट करें
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Step 2: Indus Appstore पर APK डिप्लॉय करें
+      - name: Deploy APK to Indus Appstore
+        uses: indusappstore/appstore-release@v1
+        with:
+          file_path: './app-release.apk'
+          file_type: 'apk'
+          package_name: 'com.work.sport'
+          api_token: ${{ secrets.INDUS_API_TOKEN }}
+          release_notes: 'Automated deployment via GitHub Actions for Work Sport app'
