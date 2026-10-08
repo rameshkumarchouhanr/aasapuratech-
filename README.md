@@ -1,4 +1,23 @@
-# work-spot-
+name: Deploy to Indus Appstore
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Deploy APK to Indus Appstore
+        uses: indusappstore/appstore-release@v1
+        with:
+          file_path: './app-release.apk'
+          file_type: 'apk'
+          package_name: 'com.example.myapp'
+          api_token: ${{ secrets.INDUS_APP_STORE_API_TOKEN }}
+          release_notes: 'Automated deployment via GitHub Actions'# work-spot-
 .github/workflows/codeql-analysis.yml<!DOCTYPE html>
 <html lang="hi">
 <head>
