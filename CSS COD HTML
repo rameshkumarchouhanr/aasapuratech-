@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aasapura Tech & Work Sport</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+        }
+        header {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card h3 {
+            color: #2a5298;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        .card p {
+            color: #666;
+            font-size: 1rem;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #222;
+            color: white;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Aasapura Tech & Education</h1>
+        <p>Welcome to Work Sport App & MSME Mitra Services</p>
+    </header>
+
+    <div class="container" id="services">
+        <h2 style="text-align: center; color: #333; margin-bottom: 10px;">हमारी प्रमुख सेवाएं (Our Services)</h2>
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">डिजिटल समाधान और शिक्षा से जुड़े हमारे बेहतरीन टूल्स</p>
+        
+        <div class="services-grid">
+            <div class="card">
+                <h3>🚀 Work Sport App</h3>
+                <p>इंडस ऐपस्टोर (Indus Appstore) पर उपलब्ध हमारा नया मोबाइल एप्लिकेशन, जो आपके वर्कआउट और खेल गतिविधियों को आसान बनाता है।</p>
+            </div>
+            
+            <div class="card">
+                <h3>📚 English Education</h3>
+                <p>स्कूल के छात्रों (कक्षा 5 से 12वीं) के लिए अंग्रेजी ग्रामर, लिटरेचर और आसान शिक्षण सामग्री प्रदान करना।</p>
+            </div>
+            
+            <div class="card">
+                <h3>⚙️ GitHub Automation</h3>
+                <p>GitHub Actions और CI/CD पाइपलाइन के माध्यम से ऐप्स को ऑटोमैटिक बिल्ड और डिप्लॉय करने की सुविधा।</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Aasapura Tech. All Rights Reserved. | Ramesh Kumar Chouhan</p>
+    </footer>
+
+</body>
+</html>
