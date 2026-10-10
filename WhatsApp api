@@ -1,0 +1,12 @@
+<!-- WhatsApp Chat Button for Aasapura Tech -->
+<a id="wa-btn" href="https://wa.me/919057194614?text=Hi%20Ashapura%20Tech,%20mujhe%20WhatsApp%20API%20chahiye" 
+style="position:fixed; bottom:20px; right:20px; background:#25D366; color:white; padding:15px 20px; border-radius:50px; text-decoration:none; font-weight:bold;">
+WhatsApp Karein
+</a>
+
+<script>
+// Auto message track karega
+document.getElementById('wa-btn').onclick = function() {
+  console.log("Customer clicked to WhatsApp");
+}
+</script>
