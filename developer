@@ -1,0 +1,39 @@
+// Aasapura Tech - WhatsApp Auto Reply Bot for 9057194614
+const express = require('express');
+const app = express();
+app.use(express.json());
+
+// IMPORTANT - Yahi Token aapko Meta me dalna hai
+const VERIFY_TOKEN = "jalor123"; 
+
+// 1. YE CODE WEBHOOK VERIFY KAREGA (Thappad Setup)
+app.get('/webhook', (req, res) => {
+  let mode = req.query['hub.mode'];
+  let token = req.query['hub.verify_token'];
+  let challenge = req.query['hub.challenge'];
+
+  if (mode && token) {
+    if (mode === 'subscribe' && token === VERIFY_TOKEN) {
+      console.log('WEBHOOK_VERIFIED');
+      res.status(200).send(challenge);
+    } else {
+      res.sendStatus(403);
+    }
+  }
+});
+
+// 2. YE CODE MESSAGE AATE HI AUTO REPLY BHEJEGA
+app.post('/webhook', (req, res) => {
+  console.log("Message Received:", JSON.stringify(req.body));
+  res.sendStatus(200); // Meta ko turant OK bhejo
+  
+  // Yahan se aapka Auto Reply ka logic shuru hoga
+  // (Abhi ke liye sirf log kar rahe hain)
+});
+
+app.get('/', (req, res) => {
+  res.send('Aasapura Tech WhatsApp Bot is Live!');
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server ON at ${PORT}`));
