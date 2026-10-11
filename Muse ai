@@ -1,0 +1,24 @@
+import json
+import os
+
+import requests
+
+response = requests.post(
+    "https://api.meta.ai/v1/images/edits",
+    headers={
+        "Authorization": f"Bearer {os.environ['MODEL_API_KEY']}",
+        "Content-Type": "application/json",
+    },
+    json={
+        "model": "muse-image-1.0",
+        "prompt": "add a small red wool hat on the fox's head, keep the snowy forest background",
+        "images": [
+            {
+                "image_url": "data:image/webp;base64,UklGR...",
+            },
+        ],
+        "n": 1,
+    },
+)
+response.raise_for_status()
+print(json.dumps(response.json(), indent=2))
