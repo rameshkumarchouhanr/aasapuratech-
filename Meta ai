@@ -1,0 +1,63 @@
+const express = require('express');
+const app = express();
+app.use(express.json());
+
+// ===== AAPKI KEYS YAHAN DAALO =====
+const VERIFY_TOKEN = "jalor123";
+const META_WHATSAPP_TOKEN = "EAA...Aapka_WhatsApp_Token";
+const META_FB_PAGE_TOKEN = "EAA...Aapka_Facebook_Page_Token"; // developer.facebook.com se
+const PHONE_NUMBER_ID = "9057194614_ID";
+const FB_PAGE_ID = "Aapka_Facebook_Page_ID";
+
+// 1. WEBHOOK VERIFY - Gate UP + Meta Connect
+app.get('/webhook', (req, res) => {
+  if (req.query['hub.verify_token'] === VERIFY_TOKEN) {
+    res.send(req.query['hub.challenge']);
+  } else {
+    res.sendStatus(403);
+  }
+});
+
+// 2. COMBINE LOGIC - WhatsApp + Facebook + AI News
+app.post('/webhook', async (req, res) => {
+  res.sendStatus(200); // Pehle Meta ko OK bolo
+
+  let message = req.body.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
+  if (!message) return;
+
+  let userNo = message.from;
+  let userText = message.text.body;
+
+  // --- NEWS AI LOGIC ---
+  let aiNewsReply = `🙏 Jai Maa Ashapura!\n\n📰 Jalor Breaking News: ${userText} ke baare me jaankari mil rahi hai.\n\nRahul Chauhan aur Aayush Prajapati ki team Nagaur me... AI dwara banayi gayi news.`;
+
+  // A. WhatsApp par Auto Reply
+  await fetch(`https://graph.facebook.com/v20.0/${PHONE_NUMBER_ID}/messages`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${META_WHATSAPP_TOKEN}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messaging_product: "whatsapp", to: userNo, text: { body: aiNewsReply } })
+  });
+
+  // B. Sidha Facebook Page par bhi Post karega (Paisa yahan se banega)
+  if (userText.toLowerCase().includes("news post karo")) {
+    await fetch(`https://graph.facebook.com/${FB_PAGE_ID}/feed`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: aiNewsReply, access_token: META_FB_PAGE_TOKEN })
+    });
+    console.log("Facebook par post ho gaya!");
+  }
+});
+
+// 3. GATE UP WEBSITE KE LIYE API
+app.get('/api/news', (req, res) => {
+  res.json({
+    status: "active",
+    partner: "Meta AI + Facebook Connected",
+    website: "Gate UP + Aasapura Tech",
+    earning: "Facebook Monetization ON",
+    latest_news: "Jalor Volleyball Team Nagaur Ravi"
+  });
+});
+
+app.get('/', (req, res) => res.send('Gate UP +
