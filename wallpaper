@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Wallpaper & Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-light {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+    </style>
+</head>
+<body class="relative min-h-screen text-white overflow-x-hidden bg-slate-950">
+
+    <!-- Wallpaper Background Layer -->
+    <div id="wallpaper-bg" class="fixed inset-0 z-0 bg-cover bg-center transition-all duration-700" style="background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop');">
+        <!-- Overlay Gradient -->
+        <div id="wallpaper-overlay" class="absolute inset-0 bg-slate-950/40 backdrop-blur-[2px] transition-all duration-500"></div>
+    </div>
+
+    <!-- Canvas Particle Effect Layer -->
+    <canvas id="particle-canvas" class="fixed inset-0 z-0 pointer-events-none"></canvas>
+
+    <!-- Main Container -->
+    <div class="relative z-10 min-h-screen flex flex-col justify-between p-4 md:p-8 max-w-7xl mx-auto">
+
+        <!-- Top Navigation / Header -->
+        <header class="flex flex-col md:flex-row items-center justify-between gap-4 glass rounded-2xl p-4 shadow-2xl">
+            <div class="flex items-center gap-3">
+                <div class="p-2.5 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 text-white shadow-lg shadow-indigo-500/30">
+                    <i data-lucide="sparkles" class="w-6 h-6 animate-pulse"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
+                        Ramesh Kumar Chouhan | Workspace
+                    </h1>
+                    <p class="text-xs text-slate-400">Interactive Dynamic Wallpaper & Hub</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <!-- Search Bar -->
+                <div class="relative">
+                    <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="quick-search" placeholder="Search Google or URL..." 
+                        class="bg-slate-900/60 border border-slate-700/60 rounded-xl pl-9 pr-4 py-2 text-sm focus:outline-none focus:border-indigo-500 w-64 md:w-80 transition-all text-slate-200 placeholder-slate-500">
+                </div>
+
+                <!-- Customizer Toggle -->
+                <button onclick="toggleModal('customizer-modal')" class="p-2.5 rounded-xl glass-light hover:bg-white/20 transition-all text-slate-200 flex items-center gap-2 text-sm font-medium">
+                    <i data-lucide="palette" class="w-4 h-4"></i>
+                    <span class="hidden md:inline">Wallpapers</span>
+                </button>
+
+                <!-- Settings / About -->
+                <button onclick="toggleModal('about-modal')" class="p-2.5 rounded-xl glass-light hover:bg-white/20 transition-all text-slate-200">
+                    <i data-lucide="info" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Center Hub / Clock & Widgets -->
+        <main class="my-auto py-12 flex flex-col items-center justify-center text-center">
+            <!-- Clock Widget -->
+            <div class="mb-8 select-none">
+                <div id="clock-time" class="text-6xl md:text-8xl font-black tracking-tighter drop-shadow-2xl text-white">
+                    00:00
+                </div>
+                <div id="clock-date" class="text-base md:text-lg font-medium text-indigo-200 tracking-wide mt-2 drop-shadow">
+                    Loading Date...
+                </div>
+            </div>
+
+            <!-- Greeting / Focus -->
+            <div class="glass max-w-lg w-full rounded-2xl p-6 shadow-2xl mb-8 border border-white/10">
+                <h2 id="greeting-text" class="text-xl font-bold mb-2">Good Day, Explorer</h2>
+                <p id="quote-text" class="text-sm text-slate-300 italic mb-4">"The best way to predict the future is to invent it."</p>
+                <div class="flex items-center justify-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span class="text-xs text-emerald-300 font-medium">System Online • Ready</span>
+                </div>
+            </div>
+
+            <!-- Quick Links Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-2xl w-full">
+                <a href="https://github.com" target="_blank" class="glass p-4 rounded-xl hover:bg-white/15 transition-all flex flex-col items-center gap-2 group">
+                    <i data-lucide="github" class="w-6 h-6 text-indigo-300 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-xs font-semibold">GitHub</span>
+                </a>
+                <a href="https://linkedin.com" target="_blank" class="glass p-4 rounded-xl hover:bg-white/15 transition-all flex flex-col items-center gap-2 group">
+                    <i data-lucide="linkedin" class="w-6 h-6 text-indigo-300 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-xs font-semibold">LinkedIn</span>
+                </a>
+                <a href="https://youtube.com" target="_blank" class="glass p-4 rounded-xl hover:bg-white/15 transition-all flex flex-col items-center gap-2 group">
+                    <i data-lucide="youtube" class="w-6 h-6 text-rose-400 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-xs font-semibold">YouTube</span>
+                </a>
+                <a href="https://chatgpt.com" target="_blank" class="glass p-4 rounded-xl hover:bg-white/15 transition-all flex flex-col items-center gap-2 group">
+                    <i data-lucide="bot" class="w-6 h-6 text-emerald-400 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-xs font-semibold">AI Assistant</span>
+                </a>
+            </div>
+        </main>
+
+        <!-- Footer Bar -->
+        <footer class="flex flex-col sm:flex-row items-center justify-between gap-4 glass rounded-2xl p-4 text-xs text-slate-400">
+            <div class="flex items-center gap-4">
+                <span>© 2026 Ramesh Kumar Chouhan</span>
+                <span>•</span>
+                <span id="weather-widget" class="flex items-center gap-1.5 text-slate-300">
+                    <i data-lucide="sun" class="w-4 h-4 text-amber-400"></i> Jaipur, 28°C
+                </span>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="changeParticleMode()" id="particle-toggle-btn" class="hover:text-white transition-colors flex items-center gap-1">
+                    <i data-lucide="activity" class="w-3.5 h-3.5"></i> Particles: On
+                </button>
+                <button onclick="toggleFullscreen()" class="hover:text-white transition-colors flex items-center gap-1">
+                    <i data-lucide="maximize" class="w-3.5 h-3.5"></i> Fullscreen
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Wallpaper Customizer Modal -->
+    <div id="customizer-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md hidden">
+        <div class="glass max-w-xl w-full rounded-2xl p-6 shadow-2xl relative border border-white/20">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-bold flex items-center gap-2">
+                    <i data-lucide="palette" class="w-5 h-5 text-indigo-400"></i> Wallpaper Customizer
+                </h3>
+                <button onclick="toggleModal('customizer-modal')" class="p-1 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <p class="text-xs text-slate-300 mb-4">Choose a preset wallpaper or provide your own image URL:</p>
+            
+            <div class="grid grid-cols-3 gap-3 mb-6">
+                <div onclick="setWallpaper('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop')" class="h-24 rounded-xl bg-cover bg-center cursor-pointer border-2 border-transparent hover:border-indigo-500 transition-all shadow-md" style="background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=500&auto=format&fit=crop')"></div>
+                <div onclick="setWallpaper('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=2000&auto=format&fit=crop')" class="h-24 rounded-xl bg-cover bg-center cursor-pointer border-2 border-transparent hover:border-indigo-500 transition-all shadow-md" style="background-image: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=500&auto=format&fit=crop')"></div>
+                <div onclick="setWallpaper('https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=2000&auto=format&fit=crop')" class="h-24 rounded-xl bg-cover bg-center cursor-pointer border-2 border-transparent hover:border-indigo-500 transition-all shadow-md" style="background-image: url('https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=500&auto=format&fit=crop')"></div>
+                <div onclick="setWallpaper('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2000&auto=format&fit=crop')" class="h-24 rounded-xl bg-cover bg-center cursor-pointer border-2 border-transparent hover:border-indigo-500 transition-all shadow-md" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=500&auto=format&fit=crop')"></div>
+                <div onclick="setWallpaper('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=2000&auto=format&fit=crop')" class="h-24 rounded-xl bg-cover bg-center cursor-pointer border-2 border-transparent hover:border-indigo-500 transition-all shadow-md" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=500&auto=format&fit=crop')"></div>
+                <div onclick="setWallpaper('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2000&auto=format&fit=crop')" class="h-24 rounded-xl bg-cover bg-center cursor-pointer border-2 border-transparent hover:border-indigo-500 transition-all shadow-md" style="background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=500&auto=format&fit=crop')"></div>
+            </div>
+
+            <div class="space-y-3">
+                <label class="text-xs font-semibold text-slate-300">Custom Image URL</label>
+                <div class="flex gap-2">
+                    <input type="url" id="custom-url-input" placeholder="https://example.com/image.jpg" class="flex-1 bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-indigo-500">
+                    <button onclick="applyCustomWallpaper()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all">Apply</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Modal -->
+    <div id="about-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md hidden">
+        <div class="glass max-w-md w-full rounded-2xl p-6 shadow-2xl relative border border-white/20 text-center">
+            <div class="flex justify-end mb-2">
+                <button onclick="toggleModal('about-modal')" class="p-1 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="w-16 h-16 bg-gradient-to-tr from-indigo-600 to-violet-500 rounded-2xl mx-auto flex items-center justify-center text-white mb-4 shadow-xl shadow-indigo-500/30">
+                <i data-lucide="code" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-1">Ramesh Kumar Chouhan</h3>
+            <p class="text-xs text-indigo-300 mb-4">Portfolio & Interactive Wallpaper Hub</p>
+            <p class="text-sm text-slate-300 mb-6">
+                This dynamic workspace integrates your personal portal with real-time widgets, customizable live backgrounds, and smooth interactive animations.
+            </p>
+            <a href="https://rameshkumarchouhanr.github.io" target="_blank" class="inline-block bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition-all shadow-lg shadow-indigo-600/30">
+                Visit Official GitHub Site
+            </a>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Clock & Date Updater
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+            
+            document.getElementById('clock-time').textContent = `${hours}:${minutes} ${ampm}`;
+            
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('clock-date').textContent = now.toLocaleDateString('en-US', options);
+
+            // Greeting based on time
+            const hourNum = now.getHours();
+            let greeting = "Good Evening";
+            if (hourNum < 12) greeting = "Good Morning";
+            else if (hourNum < 17) greeting = "Good Afternoon";
+            document.getElementById('greeting-text').textContent = `${greeting}, Ramesh`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Quick Search Listener
+        document.getElementById('quick-search').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const query = this.value.trim();
+                if (query) {
+                    if (query.startsWith('http://') || query.startsWith('https://')) {
+                        window.open(query, '_blank');
+                    } else {
+                        window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+                    }
+                }
+            }
+        });
+
+        // Modal Toggle
+        function toggleModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.toggle('hidden');
+        }
+
+        // Wallpaper Management
+        function setWallpaper(url) {
+            document.getElementById('wallpaper-bg').style.backgroundImage = `url('${url}')`;
+            localStorage.setItem('user_wallpaper', url);
+            toggleModal('customizer-modal');
+        }
+
+        function applyCustomWallpaper() {
+            const url = document.getElementById('custom-url-input').value.trim();
+            if (url) {
+                setWallpaper(url);
+                document.getElementById('custom-url-input').value = '';
+            }
+        }
+
+        // Load saved wallpaper
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedWall = localStorage.getItem('user_wallpaper');
+            if (savedWall) {
+                document.getElementById('wallpaper-bg').style.backgroundImage = `url('${savedWall}')`;
+            }
+        });
+
+        // Fullscreen Toggle
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Interactive Particle Canvas
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particlesEnabled = true;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const particlesArray = [];
+        const numberOfParticles = 45;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = Math.random() * 0.6 - 0.3;
+                this.speedY = Math.random() * 0.6 - 0.3;
+                this.alpha = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x > canvas.width) this.x = 0;
+                else if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                else if (this.y < 0) this.y = canvas.height;
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < numberOfParticles; i++) {
+            particlesArray.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (particlesEnabled) {
+                for (let i = 0; i < particlesArray.length; i++) {
+                    particlesArray[i].update();
+                    particlesArray[i].draw();
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        function changeParticleMode() {
+            particlesEnabled = !particlesEnabled;
+            document.getElementById('particle-toggle-btn').innerHTML = `<i data-lucide="activity" class="w-3.5 h-3.5"></i> Particles: ${particlesEnabled ? 'On' : 'Off'}`;
+            lucide.createIcons();
+        }
+    </script>
+</body>
+</html>
+```eof
+
+I have successfully generated your interactive dynamic wallpaper and dashboard application inspired by `[https://rameshkumarchouhanr.github.io](https://rameshkumarchouhanr.github.io)`. 
+
+### Features Included:
+1. **Dynamic Wallpaper Switcher:** Choose from stunning preset wallpapers or input your custom image URL with persistent storage.
+2. **Real-time Live Clock & Greeting:** Interactive clock with date and time-based greetings tailored for Ramesh.
+3. **Quick Search & Shortcuts:** Integrated instant Google search bar and direct links to GitHub, LinkedIn, YouTube, and AI tools.
+4. **Interactive Particle Engine:** Smooth animated particle background canvas with a toggle switch.
+5. **Responsive Glassmorphism UI:** Modern frosted glass layout optimized for desktop and mobile screens.
